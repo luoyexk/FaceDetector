@@ -129,7 +129,7 @@ public class FaceDetectorActivity extends AppCompatActivity {
 
             @Override
             public void surfaceDestroyed(SurfaceHolder holder) {
-                mCamera.setPreviewCallback(null);// 防止 Method called after release()
+                // mCamera.setPreviewCallback(null);// 防止 Method called after release()
                 mCamera.stopPreview();
                 // mCamera.setPreviewCallback(null);
                 mCamera.release();
