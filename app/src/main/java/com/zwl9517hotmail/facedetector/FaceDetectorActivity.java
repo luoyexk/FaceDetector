@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.SurfaceHolder;
@@ -57,22 +58,34 @@ public class FaceDetectorActivity extends AppCompatActivity {
         }
         setContentView(R.layout.activity_face);
         initViews();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        requestPermission();
+    }
 
-            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    requestPermissions(new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_CODE);
-                }
-                return;
-            }
+    private void requestPermission() {
+        //1. 检查是否已经有该权限
+        if (Build.VERSION.SDK_INT >= 23 && ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
+                != PackageManager.PERMISSION_GRANTED) {
+            //2. 权限没有开启，请求权限
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_CODE);
+        } else {
+            //权限已经开启，做相应事情
             openSurfaceView();
+        }
+    }
+
+    //3. 接收申请成功或者失败回调
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CAMERA_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //权限被用户同意,做相应的事情
+                openSurfaceView();
+            } else {
+                //权限被用户拒绝，做相应的事情
+                finish();
+            }
         }
     }
 
@@ -146,16 +159,6 @@ public class FaceDetectorActivity extends AppCompatActivity {
         addContentView(facesView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_CAMERA_CODE) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                recreate();
-            }
-        }
-    }
-
     /**
      * 脸部检测接口
      */
@@ -168,12 +171,12 @@ public class FaceDetectorActivity extends AppCompatActivity {
                 Log.d("FaceDetection", "可信度：" + face.score + "face detected: " + faces.length +
                         " Face 1 Location X: " + rect.centerX() +
                         "Y: " + rect.centerY() + "   " + rect.left + " " + rect.top + " " + rect.right + " " + rect.bottom);
-                Log.e("tag", "【FaceDetectorListener】类的方法：【onFaceDetection】: ");
+                Log.e(TAG, "【FaceDetectorListener】类的方法：【onFaceDetection】: ");
                 Matrix matrix = updateFaceRect();
                 facesView.updateFaces(matrix, faces);
             } else {
                 // 只会执行一次
-                Log.e("tag", "【FaceDetectorListener】类的方法：【onFaceDetection】: " + "没有脸部");
+                Log.e(TAG, "【FaceDetectorListener】类的方法：【onFaceDetection】: " + "没有脸部");
                 facesView.removeRect();
             }
         }
@@ -182,6 +185,7 @@ public class FaceDetectorActivity extends AppCompatActivity {
     /**
      * 因为对摄像头进行了旋转，所以同时也旋转画板矩阵
      * 详细请查看{@link Camera.Face#rect}
+     *
      * @return
      */
     private Matrix updateFaceRect() {
@@ -207,7 +211,7 @@ public class FaceDetectorActivity extends AppCompatActivity {
             // mCamera supports face detection, so can start it:
             mCamera.startFaceDetection();
         } else {
-            Log.e("tag", "【FaceDetectorActivity】类的方法：【startFaceDetection】: " + "不支持");
+            Log.e(TAG, "【FaceDetectorActivity】类的方法：【startFaceDetection】: " + "不支持");
         }
     }
 

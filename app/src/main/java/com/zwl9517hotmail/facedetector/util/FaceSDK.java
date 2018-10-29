@@ -24,9 +24,13 @@ public class FaceSDK {
         FaceDetector.Face[] faceArray = new FaceDetector.Face[MAX_FACES];
         // 返回找到图片中人脸的数量，同时把返回的脸部位置信息放到faceArray中，过程耗时,图片越大耗时越久
         int findFaceNum = faceDet.findFaces(bitmap, faceArray);
-        Log.e("tag","找到脸部数量:" + findFaceNum);
+        Log.e(TAG,"找到脸部数量:" + findFaceNum);
         // 获取传回的第一张脸信息
         FaceDetector.Face face1 = faceArray[0];
+        if (face1 == null) {
+            Log.e(TAG, "DetectionBitmap: face1=null");
+            return bitmap;
+        }
         // 获取双眼的中心点，用一个PointF来接收其x、y坐标
         PointF point = new PointF();
         face1.getMidPoint(point);
@@ -47,7 +51,7 @@ public class FaceSDK {
         for (FaceDetector.Face face : faceArray) {
             if (face == null) continue;
             face.getMidPoint(pf);
-            Log.e("tag", "FaceSDK : DetectionBitmap + "+face.confidence());
+            Log.e(TAG, "FaceSDK : DetectionBitmap + "+face.confidence());
             // 这里的框，参数分别是：左上角的X,Y 右下角的X,Y
             // 也就是左上角（r.left,r.top），右下角( r.right,r.bottom)。
             // 该宽度是两眼珠黑色外边距

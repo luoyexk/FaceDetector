@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final int PICK_IMAGE_ALBUM = 0x12;
     private static final int REQUEST_PERMISSION = 0x1000;
+    private static final String TAG = "MainActivity";
     private ImageView iv;
 
     @Override
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 if (cursor != null && cursor.moveToFirst()) {
                     int columnIndex = cursor.getColumnIndex(cloum[0]);
                     String imagePath = cursor.getString(columnIndex);
-                    Log.e("tag", "【MainActivity】类的方法：【onActivityResult】: " + imagePath);
+                    Log.e(TAG, "【MainActivity】类的方法：【onActivityResult】: " + imagePath);
                     Bitmap bitmap = new FaceSDK().DetectionBitmap(BitmapFactory.decodeFile(imagePath));
                     iv.setImageBitmap(bitmap);
                     cursor.close();
