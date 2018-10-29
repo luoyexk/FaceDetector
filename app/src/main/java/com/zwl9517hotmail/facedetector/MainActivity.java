@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -16,6 +17,8 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.zwl9517hotmail.facedetector.util.FaceSDK;
+
+import java.io.File;
 
 /**
  * 检测图片中脸部的数量，同时检测至少27张脸
@@ -37,6 +40,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             if (checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_PERMISSION);
             }
+        }
+
+        fastTest();
+    }
+
+    private void fastTest() {
+        File file = new File(Environment.getExternalStorageDirectory().toString() + "/face.jpg");
+        if (file.exists()) {
+            Bitmap bitmap = new FaceSDK().DetectionBitmap(BitmapFactory.decodeFile(file.toString()));
+            iv.setImageBitmap(bitmap);
         }
     }
 

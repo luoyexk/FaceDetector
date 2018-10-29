@@ -13,6 +13,7 @@ public class FaceSDK {
     private static final String TAG = "FaceIdentify";
 
     public Bitmap DetectionBitmap(Bitmap b) {
+        long startTime = System.currentTimeMillis();
         Bitmap bitmap = null;
         // 检测前必须转化为RGB_565格式。文末有详述连接
         bitmap = b.copy(Bitmap.Config.RGB_565, true);
@@ -24,7 +25,7 @@ public class FaceSDK {
         FaceDetector.Face[] faceArray = new FaceDetector.Face[MAX_FACES];
         // 返回找到图片中人脸的数量，同时把返回的脸部位置信息放到faceArray中，过程耗时,图片越大耗时越久
         int findFaceNum = faceDet.findFaces(bitmap, faceArray);
-        Log.e(TAG,"找到脸部数量:" + findFaceNum);
+        Log.e(TAG,"找到脸部数量:" + findFaceNum + " 耗时：" + (System.currentTimeMillis() - startTime) + "ms");
         // 获取传回的第一张脸信息
         FaceDetector.Face face1 = faceArray[0];
         if (face1 == null) {
