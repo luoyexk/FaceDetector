@@ -1,4 +1,4 @@
-package com.zwl9517hotmail.facedetector;
+package com.facedetector;
 
 import android.Manifest;
 import android.content.Context;
@@ -19,8 +19,9 @@ import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
-import com.zwl9517hotmail.facedetector.customview.DrawFacesView;
+import com.facedetector.customview.DrawFacesView;
 
 import java.io.IOException;
 import java.util.List;
@@ -31,7 +32,7 @@ import java.util.List;
  *      e-mail : zwl9517@hotmail.com
  *      time   : 2017/07/17
  *      version:
- *      desc   :
+ *      desc   : 由于使用的是camera1，在P以上的版本可能无法使用
  * </pre>
  */
 public class FaceDetectorActivity extends AppCompatActivity {
@@ -134,7 +135,6 @@ public class FaceDetectorActivity extends AppCompatActivity {
                 // mCamera.setPreviewCallback(null);
                 mCamera.release();
                 mCamera = null;
-                holder = null;
             }
         });
     }
@@ -152,6 +152,8 @@ public class FaceDetectorActivity extends AppCompatActivity {
         if (requestCode == REQUEST_CAMERA_CODE) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 recreate();
+            } else {
+                finish();
             }
         }
     }
@@ -165,10 +167,9 @@ public class FaceDetectorActivity extends AppCompatActivity {
             if (faces.length > 0) {
                 Camera.Face face = faces[0];
                 Rect rect = face.rect;
-                Log.d("FaceDetection", "可信度：" + face.score + "face detected: " + faces.length +
+                Log.d("FaceDetection", "confidence：" + face.score + "face detected: " + faces.length +
                         " Face 1 Location X: " + rect.centerX() +
                         "Y: " + rect.centerY() + "   " + rect.left + " " + rect.top + " " + rect.right + " " + rect.bottom);
-                Log.e("tag", "【FaceDetectorListener】类的方法：【onFaceDetection】: ");
                 Matrix matrix = updateFaceRect();
                 facesView.updateFaces(matrix, faces);
             } else {
@@ -205,9 +206,14 @@ public class FaceDetectorActivity extends AppCompatActivity {
         // start face detection only *after* preview has started
         if (params.getMaxNumDetectedFaces() > 0) {
             // mCamera supports face detection, so can start it:
-            mCamera.startFaceDetection();
+            try {
+                mCamera.startFaceDetection();
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Invoked this method throw exception on some devices but also can detect.
+            }
         } else {
-            Log.e("tag", "【FaceDetectorActivity】类的方法：【startFaceDetection】: " + "不支持");
+            Toast.makeText(this, "Device not support face detection", Toast.LENGTH_SHORT).show();
         }
     }
 

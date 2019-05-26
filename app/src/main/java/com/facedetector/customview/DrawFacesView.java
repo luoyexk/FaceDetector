@@ -1,4 +1,4 @@
-package com.zwl9517hotmail.facedetector.customview;
+package com.facedetector.customview;
 
 import android.content.Context;
 import android.graphics.Canvas;

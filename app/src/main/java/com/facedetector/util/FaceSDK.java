@@ -1,4 +1,4 @@
-package com.zwl9517hotmail.facedetector.util;
+package com.facedetector.util;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;

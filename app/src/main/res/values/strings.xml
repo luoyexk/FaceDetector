@@ -1,3 +1,5 @@
 <resources>
-    <string name="app_name">FaceDetectorProject</string>
+    <string name="app_name">FaceDetector</string>
+    <string name="detect_by_camera">Detect by camera</string>
+    <string name="detect_by_image">Detect by image</string>
 </resources>

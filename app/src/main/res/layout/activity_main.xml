@@ -4,28 +4,41 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:divider="@drawable/diver"
+    android:dividerPadding="@dimen/dp_16"
     android:orientation="vertical"
+    android:showDividers="middle"
     tools:context=".MainActivity">
 
-    <Button
+    <TextView
         android:id="@+id/btn1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="打开摄像头实时检测人脸" />
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:text="@string/detect_by_camera"
+        android:textAllCaps="false" />
 
     <TextView
-        android:id="@+id/tv"
-        android:layout_width="match_parent"
-        android:layout_height="5dp" />
-
-    <Button
         android:id="@+id/btn_de_face_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="通过图片检测人脸" />
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:text="@string/detect_by_image"
+        android:textAllCaps="false" />
 
-    <ImageView
-        android:id="@+id/iv"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </ScrollView>
 </LinearLayout>
