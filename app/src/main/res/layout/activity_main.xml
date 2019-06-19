@@ -32,6 +32,30 @@
         android:text="@string/detect_by_image"
         android:textAllCaps="false" />
 
+    <TextView
+        android:id="@+id/btnReceive"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:onClick="onClick"
+        android:text="@string/receive_image"
+        android:textAllCaps="false" />
+    <TextView
+        android:id="@+id/btnSetHost"
+        android:layout_width="match_parent"
+        android:layout_height="?android:attr/actionBarSize"
+        android:background="?android:attr/selectableItemBackground"
+        android:gravity="center_vertical"
+        android:paddingStart="@dimen/dp_16"
+        android:paddingEnd="@dimen/dp_16"
+        android:onClick="onClick"
+        android:text="@string/setting_host"
+        android:textAllCaps="false" />
+
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">

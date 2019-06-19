@@ -17,13 +17,19 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
 import android.widget.Toolbar;
 
+import com.facedetector.mqtt.App;
+import com.facedetector.mqtt.IpHostActivity;
+import com.facedetector.mqtt.ReceiveActivity;
 import com.facedetector.util.FaceSDK;
 
 import java.lang.ref.WeakReference;
@@ -69,12 +75,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnGallery.setOnClickListener(this);
         findViewById(R.id.btn1).setOnClickListener(this);
         iv = findViewById(R.id.iv);
+        getImei();
+    }
+
+    private void getImei() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return;
+        }
+        TelephonyManager mTelephony = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+        assert mTelephony != null;
+        String imei;
+        if (mTelephony.getDeviceId() != null) {
+            imei = mTelephony.getDeviceId();
+        } else {
+            imei = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
+        }
+        App.imei = imei;
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode != RESULT_OK) return;
+        if (resultCode != RESULT_OK) {
+            return;
+        }
         if (requestCode == PICK_IMAGE_ALBUM) {
             Uri uri = data.getData();
             if (handlerThread == null) {
@@ -96,6 +127,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btn_de_face_image:
                 openAlbum();
                 break;
+            case R.id.btnReceive:
+                ReceiveActivity.start(this);
+                break;
+            case R.id.btnSetHost:
+                IpHostActivity.start(this);
+                    break;
+            default:
         }
     }
 

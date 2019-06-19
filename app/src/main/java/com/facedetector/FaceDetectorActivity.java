@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.hardware.Camera;
@@ -14,14 +15,18 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.facedetector.customview.DrawFacesView;
+import com.facedetector.mqtt.MqttPresenter;
+import com.facedetector.util.IOrientationEventListener;
 
 import java.io.IOException;
 import java.util.List;
@@ -35,7 +40,7 @@ import java.util.List;
  *      desc   : 由于使用的是camera1，在P以上的版本可能无法使用
  * </pre>
  */
-public class FaceDetectorActivity extends AppCompatActivity {
+public class FaceDetectorActivity extends AppCompatActivity implements IFaceView {
 
     private static final String TAG = FaceDetectorActivity.class.getSimpleName();
     private static final int REQUEST_CAMERA_CODE = 0x100;
@@ -43,6 +48,9 @@ public class FaceDetectorActivity extends AppCompatActivity {
     private Camera mCamera;
     private SurfaceHolder mHolder;
     private DrawFacesView facesView;
+    private MqttPresenter mqttPresenter;
+    private ImageView imageView;
+    private IOrientationEventListener orientationEventListener;
 
     public static void start(Context context) {
         Intent intent = new Intent(context, FaceDetectorActivity.class);
@@ -75,6 +83,14 @@ public class FaceDetectorActivity extends AppCompatActivity {
             }
             openSurfaceView();
         }
+        mqttPresenter = new MqttPresenter();
+        mqttPresenter.onCreate(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mqttPresenter.onDestroy();
+        super.onDestroy();
     }
 
     /**
@@ -90,6 +106,10 @@ public class FaceDetectorActivity extends AppCompatActivity {
                     try {
                         mCamera.setFaceDetectionListener(new FaceDetectorListener());
                         mCamera.setPreviewDisplay(holder);
+                        if (orientationEventListener == null) {
+                            orientationEventListener = new IOrientationEventListener(FaceDetectorActivity.this, mCamera);
+                            orientationEventListener.enable();
+                        }
                         startFaceDetection();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -142,8 +162,15 @@ public class FaceDetectorActivity extends AppCompatActivity {
     private void initViews() {
         surfaceView = new SurfaceView(this);
         facesView = new DrawFacesView(this);
+        imageView = new ImageView(this);
+        imageView.setBackground(getDrawable(android.R.color.holo_blue_light));
         addContentView(surfaceView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
         addContentView(facesView, new FrameLayout.LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT));
+        FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(240, 240);
+        params.gravity = Gravity.BOTTOM | Gravity.END;
+        addContentView(imageView, params);
+
+
     }
 
     @Override
@@ -157,6 +184,29 @@ public class FaceDetectorActivity extends AppCompatActivity {
             }
         }
     }
+
+    @Override
+    public void onTakePictureResult(final Bitmap bitmap) {
+        if (bitmap==null) {
+            return;
+        }
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                imageView.setImageBitmap(bitmap);
+                imageView.removeCallbacks(action);
+                imageView.postDelayed(action, 10000);
+            }
+        });
+        startFaceDetection(); // re-start face detection feature
+
+    }
+    private Runnable action = new Runnable() {
+        @Override
+        public void run() {
+            imageView.setImageBitmap(null);
+        }
+    };
 
     /**
      * 脸部检测接口
@@ -172,6 +222,9 @@ public class FaceDetectorActivity extends AppCompatActivity {
                         "Y: " + rect.centerY() + "   " + rect.left + " " + rect.top + " " + rect.right + " " + rect.bottom);
                 Matrix matrix = updateFaceRect();
                 facesView.updateFaces(matrix, faces);
+                if (mqttPresenter != null) {
+                    mqttPresenter.takePicture(faces, camera);
+                }
             } else {
                 // 只会执行一次
                 Log.e("tag", "【FaceDetectorListener】类的方法：【onFaceDetection】: " + "没有脸部");

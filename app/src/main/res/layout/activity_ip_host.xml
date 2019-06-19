@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eeeeee">
+    <LinearLayout
+        android:id="@+id/line1"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:orientation="vertical">
+        <EditText
+            android:id="@+id/ip"
+            android:text="192.168.20.113"
+            android:gravity="center"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#ffffff"
+            android:hint="input service ip(IP)"/>
+
+        <EditText
+            android:id="@+id/port"
+            android:text="1883"
+            android:gravity="center"
+            android:singleLine="true"
+            android:layout_marginTop="10dp"
+            android:background="#ffffff"
+            android:maxLines="1"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:inputType="number"
+            android:hint="input port(端口号)"/>
+        <EditText
+            android:id="@+id/sub"
+            android:gravity="center"
+            android:text="face"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:layout_marginTop="10dp"
+            android:background="#ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="submit(主题)"/>
+        <EditText
+            android:id="@+id/name"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:background="#ffffff"
+            android:text="admin"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="username"/>
+        <EditText
+            android:id="@+id/psd"
+            android:gravity="center"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text="password"
+            android:layout_marginTop="10dp"
+            android:background="#ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:hint="password"/>
+        <Button
+            android:id="@+id/connect"
+            android:layout_marginTop="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="45dp"
+            android:background="#ffffff"
+            android:textColor="#0060ff"
+            android:text="save"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_below="@+id/line1"
+        android:layout_marginTop="25dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginRight="50dp"
+        android:layout_width="match_parent"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:layout_height="150dp">
+        <TextView
+            android:layout_marginTop="20dp"
+            android:textColor="#0060ff"
+            android:text="1. 确保本地服务端和手机处于局域网内（服务端在公网请忽略）"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_marginTop="5dp"
+            android:textColor="#0060ff"
+            android:text="2. 默认订阅主题和发布主题是同一个，自发自收 "
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+        <TextView
+            android:layout_marginTop="5dp"
+            android:textColor="#0060ff"
+            android:text="3. 用户名密码默认为admin  password "
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+
+</RelativeLayout>
