@@ -2,4 +2,9 @@
     <string name="app_name">FaceDetector</string>
     <string name="detect_by_camera">Detect by camera</string>
     <string name="detect_by_image">Detect by image</string>
+    <string name="need_permissions_to_take_pictures">Need permissions to take pictures.</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="capture">Capture</string>
+
 </resources>

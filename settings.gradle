@@ -1,1 +1,1 @@
-include ':app', ':libfacerepository'
+include ':app'

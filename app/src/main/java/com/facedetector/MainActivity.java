@@ -1,9 +1,7 @@
 package com.facedetector;
 
 import android.Manifest;
-import android.content.ContentProvider;
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -17,12 +15,11 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Message;
 import android.provider.MediaStore;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.facedetector.util.FaceSDK;
 
